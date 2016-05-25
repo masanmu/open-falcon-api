@@ -3,6 +3,7 @@
 from core import Open_Falcon_Api
 import optparse
 import getpass
+import os
 
 port = {
         "agent":1988,
@@ -83,13 +84,26 @@ if __name__ == "__main__":
     if options.filename:
         aggregator=dict()
         method=method.replace("/","_")
-        with open(options.filename) as f:
-            for i in f.xreadlines():
-                line = i.split("    ")
-                aggregator["numerator"] = line[0]
-                aggregator["denominator"] = line[1]
-                aggregator["endpoint"] = line[2]
-                aggregator["metric"] = line[3]
-                aggregator["tags"] = line[4]
-                aggregator["step"] = line[5]
-                exec "openfalconapi."+method+"(aggregator,module_port)"
+        try:
+            with open(options.filename) as f:
+                for i in f.xreadlines():
+                    line = i.split("    ")
+                    aggregator["numerator"] = line[0]
+                    aggregator["denominator"] = line[1]
+                    aggregator["endpoint"] = line[2]
+                    aggregator["metric"] = line[3]
+                    aggregator["tags"] = line[4]
+                    aggregator["step"] = line[5]
+                    exec "openfalconapi."+method+"(aggregator,module_port)"
+            os.exit(0)
+        except Exception as e:
+            print "Error:",e
+    aggregator = dict()
+    aggregator["numerator"] = raw_input("numerator:")
+    aggregator["denominator"] = raw_input("denominator:")
+    aggregator["endpoint"] = raw_input("endpoint:")
+    aggregator["metric"] = raw_input("metric:")
+    aggregator["tags"] = raw_input("tags:")
+    aggregator["step"] = raw_input("step:")
+    exec "openfalconapi."+method+"(aggregator,module_port)"
+
