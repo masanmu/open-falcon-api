@@ -19,10 +19,13 @@ class Open_Falcon_Api(object):
                 "name":self.user,
                 "password":self.password,
                 }
-        cookie = cookielib.CookieJar()
-        handler = urllib2.HTTPCookieProcessor(cookie)
-        self.opener = urllib2.build_opener(handler)
-        self.auth = self.opener.open(loginurl,urllib.urlencode(self.request_data))
+        try:
+            cookie = cookielib.CookieJar()
+            handler = urllib2.HTTPCookieProcessor(cookie)
+            self.opener = urllib2.build_opener(handler)
+            self.auth = self.opener.open(loginurl,urllib.urlencode(self.request_data))
+        except Exception as e:
+            print "Error:",e
 
     def deal_request(self,method,params,port):
         self.request_data = params
