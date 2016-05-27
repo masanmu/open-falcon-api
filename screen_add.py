@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
+
 from core import Open_Falcon_Api
 
 import optparse
@@ -100,4 +101,12 @@ if __name__=="__main__":
                         pass
             print data
             exec "of."+method+"(data,module_port)"
-        #of.screen_2_graph(data,8081)
+        else:
+            data = dict()
+            data["title"] = raw_input("title:")
+            data["hosts"] = raw_input("hosts:")
+            data["counters"] = raw_input("counters:")
+            data["timespan"] = raw_input("timespan:")
+            data["graph_type"] = raw_input("graph_type:")
+            data["method"] = raw_input("method:")
+            exec "of."+method+"(data,module_port)"
