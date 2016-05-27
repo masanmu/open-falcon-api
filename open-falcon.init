@@ -1,0 +1,56 @@
+#!/bin/bash
+
+Open_Falcon=/usr/local/open-falcon
+NAME=Open-Falcom
+SERVER="127.0.0.1"
+declare -A port
+
+port=(
+["agent"]="1988"
+["alarm"]="9912"
+["dashboard"]="8081"
+["fe"]="1234"
+["graph"]="6071"
+["hbs"]="6031"
+["judge"]="6081"
+["links"]="5090"
+["portal"]="5050"
+["task"]="8002"
+["transfer"]="6060"
+["query"]="9966"
+)
+
+if [ $# -eq "0" ];then
+	echo "Usage: $NAME {build|pack|start|stop|restart|status|tail}"
+	exit -1
+fi
+
+open_falcon(){
+	for module in $(echo ${!port[*]})
+	do
+		echo -e "\033[32m===========================================\033[0m"
+		a=`cd "$Open_Falcon/$module/" && ./control $1`
+       	 	echo -e "\033[33m$module\t:\033[0m\033[32m$a\033[0m"
+	done
+}
+
+open_falcon_health(){
+	for module in $(echo ${!port[*]})
+	do
+		a=`/usr/bin/curl -s http://$SERVER:${port[$module]}/health`
+		if [ "$a" == "ok" ]; then
+			echo -e "\033[33m$module\033[0m:\t[\033[32m$a\033[0m]"
+		else
+			echo -e "\033[33m$module\033[0m:\t[\033[31mNo medical examination or alive\033[0m]"
+		fi
+	done
+}
+
+case $1 in
+	build|pack|start|stop|restart|status|tail)
+		open_falcon $1
+		;;
+	health)
+		open_falcon_health $1
+		;;
+esac
