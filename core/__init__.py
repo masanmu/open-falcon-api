@@ -35,7 +35,7 @@ class Open_Falcon_Api(object):
                 response = self.opener.open(method_url,urllib.urlencode(self.request_data))
             else:
                 response = self.opener.open(method_url)
-            print "ok" 
+            print response.read() 
         except Exception as e:
             print "Error:",e
     def __getattr__(self,method):
