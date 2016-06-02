@@ -3,6 +3,7 @@
 import getpass
 import optparse
 import time
+import re
 
 from core import Open_Falcon_Api
 
@@ -69,10 +70,18 @@ if __name__ == "__main__":
 
     while 1:
         api_num = raw_input("Choose any one of a list of api:")
-        method = api_list[api_num].replace("/","_")
+        pattern = re.compile(r'{(.*?)}')
+        match = pattern.findall(api_list[api_num])
+        method = api_list[api_num]
+        for i in match:
+            value = raw_input(i+":")
+            method = re.sub("{"+i+"}",value,method)
+        method = method.replace("/","_")
+        print method
         ts = int(time.time()) 
-        data = raw_input("Required to send data:")
+        data = raw_input("Please input post data:")
         if not data:
-            exec "openfalconapi."+method+"(None,8081)"
+            print "openfalconapi."+method+"(None,8081)"
+            exec 'openfalconapi."'+method+'(None,8081)"'
         else:
             exec "openfalconapi."+method+"(data,8081)"
